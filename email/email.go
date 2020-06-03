@@ -1,6 +1,7 @@
 package validators
 
 import (
+	"net"
 	"regexp"
 	"strings"
 )
@@ -42,5 +43,21 @@ func isValidStructure(email string) bool {
 }
 
 func isValidDomain(email string) bool {
+	i := strings.Index(email, "@")
+	if i < 0 {
+		return false
+	}
+	domain := email[i+1:]
+	if !isValidDNS(domain) {
+		return false
+	}
+	return true
+}
+
+func isValidDNS(domain string) bool {
+	_, err := net.LookupIP(domain)
+	if err != nil {
+		return false
+	}
 	return true
 }
